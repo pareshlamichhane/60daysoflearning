@@ -1,0 +1,10 @@
+.wrap h1 {
+    color: #0073aa;
+    font-size: 2em;
+    margin-top: 20px;
+}
+.wrap p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
