@@ -1,0 +1,102 @@
+<?php
+defined( 'ABSPATH' ) || exit;
+
+class Learning_Logger {
+    public static function init() {
+        add_action( 'admin_menu', [ self::class, 'add_admin_menu' ] );
+        add_filter( 'plugin_action_links_' . LEARNING_PLUGIN_BASENAME, [ self::class, 'add_settings_link' ] );
+        add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_styles' ] );
+        add_shortcode( 'show_learning_logs', [ self::class, 'display_logs' ] );
+    }
+
+    public static function add_admin_menu() {
+        add_menu_page(
+            '60 Days of Learning',
+            '60 Days of Learning',
+            'manage_options',
+            'learning-plugin-dashboard',
+            [ self::class, 'dashboard_page' ],
+            'dashicons-lightbulb',
+            50
+        );
+        add_submenu_page(
+            'learning-plugin-dashboard',
+            'Dashboard',
+            'Dashboard',
+            'manage_options',
+            'learning-plugin-dashboard',
+            [self::class,'dashboard_page']
+        );
+        add_submenu_page(
+            'learning-plugin-dashboard',
+            'Learning Logs',
+            'Learning Logs',
+            'manage_options',
+            'learning-logs',
+            [ self::class, 'logs_page' ]
+        );
+    }
+
+    public static function dashboard_page() {
+        echo '<div class="wrap"><h1>Welcome to 60 Days of Learning Plugin Dashboard</h1><p>Track your learning progress here.</p></div>';
+    }
+
+    public static function add_settings_link( $links ) {
+        $settings_link = '<a href="admin.php?page=learning-plugin-dashboard">Dashboard</a>';
+        array_unshift( $links, $settings_link );
+        return $links;
+    }
+
+    public static function enqueue_admin_styles( $hook ) {
+        if ( strpos($hook, 'learning-plugin-dashboard') === false && strpos($hook, 'learning-logs') === false ) return;
+        wp_enqueue_style( 'learning-plugin-admin-css', LEARNING_PLUGIN_URL . 'assets/admin-style.css' );
+    }
+
+    public static function logs_page() {
+        if ( isset( $_POST['day'] ) && isset( $_POST['summary'] ) ) {
+            $logs = get_option( 'learning_logs', [] );
+            $logs[] = [
+                'day' => sanitize_text_field( $_POST['day'] ),
+                'summary' => sanitize_textarea_field( $_POST['summary'] ),
+                'timestamp' => current_time( 'mysql' ),
+            ];
+            update_option( 'learning_logs', $logs );
+            echo '<div class="notice notice-success"><p>Log added!</p></div>';
+        }
+        ?>
+        <div class="wrap">
+            <h2>Add Learning Log</h2>
+            <form method="post">
+                <label for="day">Day:</label><br>
+                <input type="text" name="day" required><br><br>
+                <label for="summary">What you learned:</label><br>
+                <textarea name="summary" rows="5" cols="50" required></textarea><br><br>
+                <input type="submit" value="Add Log" class="button button-primary">
+            </form>
+        </div>
+        <?php
+    }
+
+    public static function display_logs($atts) {
+        $atts = shortcode_atts([
+            'day' => '',
+        ], $atts);
+
+        $logs = get_option('learning_logs', []);
+        if (!$logs) return "<p>No logs yet.</p>";
+
+        $output = "<div class='learning-logs'>";
+        foreach (array_reverse($logs) as $log) {
+            if ($atts['day'] && $log['day'] != $atts['day']) continue;
+
+            $output .= "<div class='log-entry' style='border:1px solid #ddd;padding:15px;margin-bottom:15px;border-radius:8px;'>";
+            $output .= "<h3 style='margin-bottom:5px;'>Day {$log['day']}</h3>";
+            $output .= "<small><em>{$log['timestamp']}</em></small>";
+            $output .= "<p style='margin-top:10px;'>{$log['summary']}</p>";
+            $output .= "</div>";
+        }
+        $output .= "</div>";
+
+        return $output;
+    }
+}

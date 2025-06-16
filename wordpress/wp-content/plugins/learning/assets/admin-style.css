@@ -1,3 +1,9 @@
+.log-entry {
+    background: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #0073aa;
+}
 .wrap h1 {
     color: #0073aa;
     font-size: 2em;
