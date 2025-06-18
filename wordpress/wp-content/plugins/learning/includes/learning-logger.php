@@ -5,7 +5,7 @@ class Learning_Logger {
     public static function init() {
         add_action( 'admin_menu', [ self::class, 'add_admin_menu' ] );
         add_filter( 'plugin_action_links_' . LEARNING_PLUGIN_BASENAME, [ self::class, 'add_settings_link' ] );
-        add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_styles' ] );
+        add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
         add_shortcode( 'show_learning_logs', [ self::class, 'display_logs' ] );
     }
 
@@ -47,9 +47,25 @@ class Learning_Logger {
         return $links;
     }
 
-    public static function enqueue_admin_styles( $hook ) {
-        if ( strpos($hook, 'learning-plugin-dashboard') === false && strpos($hook, 'learning-logs') === false ) return;
-        wp_enqueue_style( 'learning-plugin-admin-css', LEARNING_PLUGIN_URL . 'assets/admin-style.css' );
+    public static function enqueue_admin_assets( $hook ) {
+        if ( strpos($hook, 'learning-plugin-dashboard') === false && strpos($hook, 'learning-logs') === false ) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'learning-plugin-style',
+            LEARNING_PLUGIN_URL . 'assets/admin-style.css',
+            [],
+            '1.0'
+        );
+
+        wp_enqueue_script(
+            'learning-plugin-script',
+            LEARNING_PLUGIN_URL . 'assets/admin-script.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
     }
 
     public static function logs_page() {

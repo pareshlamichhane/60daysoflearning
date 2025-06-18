@@ -14,3 +14,16 @@
     line-height: 1.5;
     color: #333;
 }
+body {
+    background: #f9f9f9 !important;
+    font-family: Arial, sans-serif;
+}
+
+.wrap {
+    background: #f9f9f9;
+    padding: 20px;
+}
+.learning-logs .log-entry {
+    background-color: #fff;
+    border-left: 5px solid #0073aa;
+}
