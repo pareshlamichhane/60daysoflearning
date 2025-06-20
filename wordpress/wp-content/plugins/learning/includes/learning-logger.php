@@ -35,6 +35,14 @@ class Learning_Logger {
             'learning-logs',
             [ self::class, 'logs_page' ]
         );
+        add_submenu_page(
+            'learning-plugin-dashboard',
+            'Settings',
+            'Settings',
+            'manage_options',
+            'learning-settings',
+            [ self::class, 'settings_page' ]
+        );
     }
 
     public static function dashboard_page() {
@@ -45,6 +53,25 @@ class Learning_Logger {
         $settings_link = '<a href="admin.php?page=learning-plugin-dashboard">Dashboard</a>';
         array_unshift( $links, $settings_link );
         return $links;
+    }
+
+    public static function settings_page() {
+        if ( isset( $_POST['api_key'] ) ) {
+            update_option( 'learning_plugin_api_key', sanitize_text_field( $_POST['api_key'] ) );
+            echo '<div class="notice notice-success"><p>Settings saved!</p></div>';
+        }
+
+        $api_key = get_option( 'learning_plugin_api_key', '' );
+        ?>
+        <div class="wrap">
+            <h2>Learning Plugin Settings</h2>
+            <form method="post">
+                <label for="api_key">Sample API Key (for future use):</label><br>
+                <input type="text" name="api_key" value="<?php echo esc_attr( $api_key ); ?>" style="width:300px;"><br><br>
+                <input type="submit" class="button button-primary" value="Save Settings">
+            </form>
+        </div>
+        <?php
     }
 
     public static function enqueue_admin_assets( $hook ) {
