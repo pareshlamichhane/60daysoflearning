@@ -3,6 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Learning_Logger {
     public static function init() {
+        add_action( 'admin_init', [ self::class, 'register_settings' ] );
         add_action( 'admin_menu', [ self::class, 'add_admin_menu' ] );
         add_filter( 'plugin_action_links_' . LEARNING_PLUGIN_BASENAME, [ self::class, 'add_settings_link' ] );
         add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
@@ -45,6 +46,36 @@ class Learning_Logger {
         );
     }
 
+        public static function register_settings() {
+        register_setting( 'learning_plugin_options', 'learning_style' );
+
+        add_settings_section(
+            'learning_plugin_main',
+            'Learning Preferences',
+            null,
+            'learning-plugin-settings'
+        );
+
+        add_settings_field(
+            'learning_style',
+            'Preferred Learning Style',
+            [ self::class, 'learning_style_field' ],
+            'learning-plugin-settings',
+            'learning_plugin_main'
+        );
+    }
+
+    public static function learning_style_field() {
+        $value = get_option( 'learning_style', 'Both' );
+        ?>
+        <select name="learning_style">
+            <option value="Reading" <?php selected( $value, 'Reading' ); ?>>Reading</option>
+            <option value="Coding" <?php selected( $value, 'Coding' ); ?>>Coding</option>
+            <option value="Both" <?php selected( $value, 'Both' ); ?>>Both</option>
+        </select>
+        <?php
+    }
+
     public static function dashboard_page() {
         echo '<div class="wrap"><h1>Welcome to 60 Days of Learning Plugin Dashboard</h1><p>Track your learning progress here.</p></div>';
     }
@@ -71,6 +102,15 @@ class Learning_Logger {
                 <input type="submit" class="button button-primary" value="Save Settings">
             </form>
         </div>
+        <div class="wrap">
+            <form method="post" action="options.php">
+                <?php
+                settings_fields( 'learning_plugin_options' );
+                do_settings_sections( 'learning-plugin-settings' );
+                submit_button();
+                ?>
+            </form>
+        </div>
         <?php
     }
 
@@ -93,6 +133,24 @@ class Learning_Logger {
             '1.0',
             true
         );
+
+        wp_enqueue_script(
+            'learning-tips-script',
+            LEARNING_PLUGIN_URL . 'assets/learning-tips.js',
+            [],
+            '1.0',
+            true
+        );
+        
+         wp_localize_script( 'learning-tips-script', 'LearningTips', [
+        'tips' => [
+            'Write before you code.',
+            '10 minutes daily beats 2 hours weekly.',
+            'Break tasks into smaller actions.',
+            'Celebrate consistency, not perfection.',
+            'Use dev tools to inspect before debugging.',
+            ],
+         ]);
     }
 
     public static function logs_page() {
