@@ -8,6 +8,8 @@ class Learning_Logger {
         add_filter( 'plugin_action_links_' . LEARNING_PLUGIN_BASENAME, [ self::class, 'add_settings_link' ] );
         add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
         add_shortcode( 'show_learning_logs', [ self::class, 'display_logs' ] );
+        add_action( 'init', [ self::class, 'register_learning_snippets_cpt' ] );
+
     }
 
     public static function add_admin_menu() {
@@ -200,4 +202,34 @@ class Learning_Logger {
 
         return $output;
     }
+
+        public static function register_learning_snippets_cpt() {
+        $labels = [
+            'name' => 'Learning Snippets',
+            'singular_name' => 'Learning Snippet',
+            'add_new' => 'Add New Snippet',
+            'add_new_item' => 'Add New Learning Snippet',
+            'edit_item' => 'Edit Snippet',
+            'new_item' => 'New Snippet',
+            'view_item' => 'View Snippet',
+            'search_items' => 'Search Snippets',
+            'not_found' => 'No snippets found',
+            'not_found_in_trash' => 'No snippets in trash',
+            'all_items' => 'All Learning Snippets',
+            'menu_name' => 'Snippets',
+        ];
+
+        $args = [
+            'labels' => $labels,
+            'public' => true,
+            'has_archive' => true,
+            'menu_position' => 5,
+            'menu_icon' => 'dashicons-welcome-learn-more',
+            'supports' => [ 'title', 'editor' ],
+            'show_in_rest' => true,
+        ];
+
+        register_post_type( 'learning_snippet', $args );
+        }
+
 }
