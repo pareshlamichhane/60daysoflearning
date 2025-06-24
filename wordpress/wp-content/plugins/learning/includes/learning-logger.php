@@ -8,6 +8,7 @@ class Learning_Logger {
         add_filter( 'plugin_action_links_' . LEARNING_PLUGIN_BASENAME, [ self::class, 'add_settings_link' ] );
         add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
         add_shortcode( 'show_learning_logs', [ self::class, 'display_logs' ] );
+        add_shortcode( 'show_snippets', [ self::class, 'display_snippets_shortcode' ] );
         add_action( 'init', [ self::class, 'register_learning_snippets_cpt' ] );
 
     }
@@ -230,6 +231,33 @@ class Learning_Logger {
         ];
 
         register_post_type( 'learning_snippet', $args );
+        }
+
+      public static function display_snippets_shortcode( $atts ) {
+            $atts = shortcode_atts([
+                'posts_per_page' => 5,
+            ], $atts );
+
+            $query = new WP_Query([
+                'post_type' => 'learning_snippet',
+                'posts_per_page' => intval( $atts['posts_per_page'] ),
+                'post_status' => 'publish',
+            ]);
+
+            if ( ! $query->have_posts() ) return '<p>No learning snippets yet.</p>';
+
+            $output = '<div class="learning-snippets">';
+            while ( $query->have_posts() ) {
+                $query->the_post();
+                $output .= '<div style="border:1px solid #ccc;padding:10px;margin-bottom:15px;border-radius:6px;">';
+                $output .= '<h3>' . esc_html( get_the_title() ) . '</h3>';
+                $output .= '<p>' . wp_kses_post( get_the_excerpt() ) . '</p>';
+                $output .= '</div>';
+            }
+            wp_reset_postdata();
+
+            $output .= '</div>';
+            return $output;
         }
 
 }
