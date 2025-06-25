@@ -10,6 +10,9 @@ class Learning_Logger {
         add_shortcode( 'show_learning_logs', [ self::class, 'display_logs' ] );
         add_shortcode( 'show_snippets', [ self::class, 'display_snippets_shortcode' ] );
         add_action( 'init', [ self::class, 'register_learning_snippets_cpt' ] );
+        add_action( 'add_meta_boxes', [ self::class, 'add_snippet_meta_box' ] );
+        add_action( 'save_post_learning_snippet', [ self::class, 'save_snippet_meta_box' ] );
+
 
     }
 
@@ -252,12 +255,54 @@ class Learning_Logger {
                 $output .= '<div style="border:1px solid #ccc;padding:10px;margin-bottom:15px;border-radius:6px;">';
                 $output .= '<h3>' . esc_html( get_the_title() ) . '</h3>';
                 $output .= '<p>' . wp_kses_post( get_the_excerpt() ) . '</p>';
+                $source = get_post_meta( get_the_ID(), '_learning_source', true );
+                if ( $source ) {
+                    $output .= '<p><em>Source:</em> ' . esc_html( $source ) . '</p>';
+                }
                 $output .= '</div>';
+
             }
             wp_reset_postdata();
 
             $output .= '</div>';
             return $output;
         }
+        public static function add_snippet_meta_box() {
+            add_meta_box(
+                'learning_snippet_source',
+                'Learning Source',
+                [ self::class, 'render_snippet_meta_box' ],
+                'learning_snippet',
+                'normal',
+                'default'
+            );
+        }
+        public static function render_snippet_meta_box( $post ) {
+            $value = get_post_meta( $post->ID, '_learning_source', true );
+            wp_nonce_field( 'learning_source_nonce_action', 'learning_source_nonce' );
+            echo '<label for="learning_source">Source (URL, book, etc.):</label>';
+            echo '<input type="text" id="learning_source" name="learning_source" value="' . esc_attr( $value ) . '" style="width:100%;"/>';
+        }
+        public static function save_snippet_meta_box( $post_id ) {
+            if (
+                ! isset( $_POST['learning_source_nonce'] ) ||
+                ! wp_verify_nonce( $_POST['learning_source_nonce'], 'learning_source_nonce_action' )
+            ) {
+                return;
+            }
+
+            if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+
+            if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+            if ( isset( $_POST['learning_source'] ) ) {
+                update_post_meta(
+                    $post_id,
+                    '_learning_source',
+                    sanitize_text_field( $_POST['learning_source'] )
+                );
+            }
+        }
+
 
 }
