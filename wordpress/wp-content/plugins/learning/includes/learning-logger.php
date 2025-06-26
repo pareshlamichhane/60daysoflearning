@@ -12,8 +12,7 @@ class Learning_Logger {
         add_action( 'init', [ self::class, 'register_learning_snippets_cpt' ] );
         add_action( 'add_meta_boxes', [ self::class, 'add_snippet_meta_box' ] );
         add_action( 'save_post_learning_snippet', [ self::class, 'save_snippet_meta_box' ] );
-
-
+        add_action( 'init', [ self::class, 'register_learning_taxonomies' ] );
     }
 
     public static function add_admin_menu() {
@@ -303,6 +302,17 @@ class Learning_Logger {
                 );
             }
         }
-
-
+        public static function register_learning_taxonomies() {
+            register_taxonomy(
+                'learning_topic',
+                'learning_snippet',
+                [
+                    'label' => 'Learning Topics',
+                    'public' => true,
+                    'hierarchical' => false,
+                    'show_in_rest' => true,
+                    'rewrite' => [ 'slug' => 'topic' ],
+                ]
+            );
+        }
 }
