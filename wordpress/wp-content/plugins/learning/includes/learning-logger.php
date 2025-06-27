@@ -13,6 +13,26 @@ class Learning_Logger {
         add_action( 'add_meta_boxes', [ self::class, 'add_snippet_meta_box' ] );
         add_action( 'save_post_learning_snippet', [ self::class, 'save_snippet_meta_box' ] );
         add_action( 'init', [ self::class, 'register_learning_taxonomies' ] );
+        add_filter( 'manage_learning_snippet_posts_columns', [ self::class, 'add_snippet_columns' ] );
+        add_action( 'manage_learning_snippet_posts_custom_column', [ self::class, 'render_snippet_columns' ], 10, 2 );
+
+    }
+    public static function add_snippet_columns( $columns ) {
+    $columns['learning_source'] = 'Source';
+    $columns['learning_topic'] = 'Topics';
+    return $columns;
+    }
+
+    public static function render_snippet_columns( $column, $post_id ) {
+        if ( $column === 'learning_source' ) {
+            $source = get_post_meta( $post_id, '_learning_source', true );
+            echo esc_html( $source );
+        }
+
+        if ( $column === 'learning_topic' ) {
+            $terms = get_the_term_list( $post_id, 'learning_topic', '', ', ' );
+            echo $terms ? $terms : '—';
+        }
     }
 
     public static function add_admin_menu() {
