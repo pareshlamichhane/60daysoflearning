@@ -16,7 +16,24 @@ class Learning_Logger {
         add_filter( 'manage_learning_snippet_posts_columns', [ self::class, 'add_snippet_columns' ] );
         add_action( 'manage_learning_snippet_posts_custom_column', [ self::class, 'render_snippet_columns' ], 10, 2 );
         add_shortcode( 'filter_snippets', [ self::class, 'filtered_snippets_shortcode' ] );
+        add_filter( 'manage_post_posts_columns', [ self::class, 'add_learning_column' ] );
+        add_action( 'manage_post_posts_custom_column', [ self::class, 'render_learning_column' ], 10, 2 );
+
     }
+
+    public static function add_learning_column( $columns ) {
+        $columns['learning_snippet'] = 'Word Count';
+       return $columns;
+    }
+
+    public static function render_learning_column( $column, $post_id ) {
+        if ( $column === 'learning_snippet' ) {
+            $content = get_post_field( 'post_content', $post_id );
+            $word_count = str_word_count( strip_tags( $content ) );
+            echo esc_html( $word_count ) . ' words';
+        }
+    }
+
 
     public static function filtered_snippets_shortcode( $atts ) {
         $atts = shortcode_atts([
