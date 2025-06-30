@@ -18,7 +18,28 @@ class Learning_Logger {
         add_shortcode( 'filter_snippets', [ self::class, 'filtered_snippets_shortcode' ] );
         add_filter( 'manage_post_posts_columns', [ self::class, 'add_learning_column' ] );
         add_action( 'manage_post_posts_custom_column', [ self::class, 'render_learning_column' ], 10, 2 );
+        add_action( 'wp_dashboard_setup', [ self::class, 'add_learning_dashboard_widget' ] );
+    }
+    public static function add_learning_dashboard_widget() {
+        wp_add_dashboard_widget(
+            'learning_dashboard_widget',
+            '60 Days of Learning – Tip of the Day',
+            [ self::class, 'render_learning_widget' ]
+        );
+    }
 
+    public static function render_learning_widget() {
+        $tips = [
+            'Write before you code.',
+            'Debug using echo and die when stuck.',
+            'Keep your functions short and focused.',
+            'Think in inputs/outputs.',
+            'Build first, optimize later.'
+        ];
+
+        $tip = $tips[ array_rand( $tips ) ];
+
+        echo "<p><strong>Today's Tip:</strong></p><blockquote style='margin:10px 0;font-style:italic;'>{$tip}</blockquote>";
     }
 
     public static function add_learning_column( $columns ) {
