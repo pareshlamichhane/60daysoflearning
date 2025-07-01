@@ -40,6 +40,23 @@ class Learning_Logger {
         $tip = $tips[ array_rand( $tips ) ];
 
         echo "<p><strong>Today's Tip:</strong></p><blockquote style='margin:10px 0;font-style:italic;'>{$tip}</blockquote>";
+
+        $logs = get_option( 'learning_logs', [] );
+
+        if ( empty( $logs ) ) {
+            echo '<p>No learning logs yet. Add one from the plugin menu!</p>';
+            return;
+        }
+
+        $latest = end( $logs );
+        ?>
+        <div style="background: #f9f9f9; border-left: 4px solid #0073aa; padding: 12px; margin-top: 8px;">
+            <h4 style="margin-top: 0; margin-bottom: 6px;">📚 Previous Learning Log</h4>
+            <p style="margin: 0;"><strong>Day <?php echo esc_html( $latest['day'] ); ?></strong></p>
+            <p style="margin: 6px 0;"><?php echo esc_html( $latest['summary'] ); ?></p>
+            <p style="margin: 0; font-size: 11px; color: #666;"><em><?php echo esc_html( $latest['timestamp'] ); ?></em></p>
+        </div>
+        <?php
     }
 
     public static function add_learning_column( $columns ) {
