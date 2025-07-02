@@ -48,15 +48,16 @@ class Learning_Logger {
             return;
         }
 
-        $latest = end( $logs );
-        ?>
-        <div style="background: #f9f9f9; border-left: 4px solid #0073aa; padding: 12px; margin-top: 8px;">
-            <h4 style="margin-top: 0; margin-bottom: 6px;">📚 Previous Learning Log</h4>
-            <p style="margin: 0;"><strong>Day <?php echo esc_html( $latest['day'] ); ?></strong></p>
-            <p style="margin: 6px 0;"><?php echo esc_html( $latest['summary'] ); ?></p>
-            <p style="margin: 0; font-size: 11px; color: #666;"><em><?php echo esc_html( $latest['timestamp'] ); ?></em></p>
-        </div>
-        <?php
+        $logs = array_reverse( $logs );
+        $recent_logs = array_slice( $logs, 0, 3 );
+        echo '<h4 style="margin-top: 0; margin-bottom: 6px;">📚 Recent Learning Logs</h4>';
+        foreach ($recent_logs as $log) {
+            echo '<hr><div style="background: #f8f8f8; border-left: 4px solid #00a0d2; padding: 10px; margin-bottom: 10px; border-radius: 4px;">';
+            echo '<p style="margin: 0;"><strong> Day '. esc_html( $log['day']) . '</strong></p>';
+            echo '<p style="margin: 6px 0;">' . esc_html( $log['summary']) . '</p>';
+            echo '<p style="margin: 0; font-size: 11px; color: #666;"><em>' .esc_html( $log['timestamp'] ).'</em></p>';
+            echo '</div><hr>';
+        }   
     }
 
     public static function add_learning_column( $columns ) {
