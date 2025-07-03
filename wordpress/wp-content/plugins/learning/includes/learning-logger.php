@@ -297,7 +297,11 @@ class Learning_Logger {
     }
 
     public static function logs_page() {
-        if ( isset( $_POST['day'] ) && isset( $_POST['summary'] ) ) {
+          if(
+            isset($_POST['learning_log_nonce']) &&
+            wp_verify_nonce($_POST['learning_log_nonce'], 'add_learning_log_action') &&
+            isset($_POST['day']) && isset($_POST['summary'])
+            ){
             $logs = get_option( 'learning_logs', [] );
             $logs[] = [
                 'day' => sanitize_text_field( $_POST['day'] ),
@@ -306,11 +310,15 @@ class Learning_Logger {
             ];
             update_option( 'learning_logs', $logs );
             echo '<div class="notice notice-success"><p>Log added!</p></div>';
+        } 
+        elseif (isset($_POST['day']) || isset($_POST['summary'])) {
+            echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         }
         ?>
         <div class="wrap">
             <h2>Add Learning Log</h2>
             <form method="post">
+                <?php wp_nonce_field( 'add_learning_log_action', 'learning_log_nonce' ); ?>
                 <label for="day">Day:</label><br>
                 <input type="text" name="day" required><br><br>
                 <label for="summary">What you learned:</label><br>
