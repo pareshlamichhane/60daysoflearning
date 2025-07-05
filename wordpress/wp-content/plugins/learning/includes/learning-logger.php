@@ -44,7 +44,55 @@ class Learning_Logger {
             'permission_callback' => '__return_true'
         ]);
     });
+    add_shortcode( 'learning_log_form', [ self::class, 'render_frontend_form' ] );
+    add_action( 'wp_enqueue_scripts', [ self::class, 'enqueue_frontend_assets' ] );
+    add_action( 'wp_ajax_log_learning_entry', [ self::class, 'handle_ajax_log' ] );
     }
+    public static function handle_ajax_log() {
+        check_ajax_referer( 'log_entry_nonce', 'nonce' );
+
+        if ( ! isset($_POST['day']) || ! isset($_POST['summary']) ) {
+            wp_send_json_error('Missing required fields.');
+        }
+
+        $logs = get_option( 'learning_logs', [] );
+        $logs[] = [
+            'day' => sanitize_text_field( $_POST['day'] ),
+            'summary' => sanitize_textarea_field( $_POST['summary'] ),
+            'timestamp' => current_time( 'mysql' ),
+        ];
+        update_option( 'learning_logs', $logs );
+
+        wp_send_json_success( 'Logged successfully!' );
+    }
+
+    public static function enqueue_frontend_assets() {
+        wp_enqueue_script(
+            'learning-frontend-log',
+            LEARNING_PLUGIN_URL . 'assets/frontend-log.js',
+            [],
+            '1.0',
+            true
+        );
+
+        wp_localize_script( 'learning-frontend-log', 'LearningAjax', [
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+             'nonce'    => wp_create_nonce( 'log_entry_nonce' ),
+        ]);
+    }
+    public static function render_frontend_form() {
+        ob_start();
+        ?>
+        <form id="learning-log-form">
+            <input type="text" name="day" placeholder="Day number" required><br><br>
+            <textarea name="summary" placeholder="What did you learn?" rows="5" required></textarea><br><br>
+            <button type="submit">Submit</button>
+            <p id="form-status"></p>
+        </form>
+        <?php
+        return ob_get_clean();
+    }
+
     public static function add_learning_dashboard_widget() {
         wp_add_dashboard_widget(
             'learning_dashboard_widget',
