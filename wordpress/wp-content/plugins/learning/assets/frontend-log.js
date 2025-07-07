@@ -1,27 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('learning-log-form');
+    const status = document.getElementById('form-status');
+
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const formData = new FormData(form);
-        const data = {
-            action: 'log_learning_entry',
-            day: formData.get('day'),
-            summary: formData.get('summary'),
-            nonce: LearningAjax.nonce 
-        };
+        formData.append('action', 'log_learning_entry');
+        formData.append('nonce', LearningAjax.nonce);
 
-        const response = await fetch(LearningAjax.ajax_url, {
+        const res = await fetch(LearningAjax.ajax_url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams(data)
+            body: formData
         });
 
-        const result = await response.json();
-        document.getElementById('form-status').textContent = result.success
-            ? '✅ Logged successfully!'
-            : '❌ Error logging.';
+        const result = await res.json();
+        if (result.success) {
+            status.textContent = '✅ ' + result.data;
+            form.reset();
+        } else {
+            status.textContent = '❌ ' + result.data;
+        }
     });
 });

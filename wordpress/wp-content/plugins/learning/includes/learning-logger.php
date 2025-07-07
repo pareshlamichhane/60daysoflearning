@@ -47,39 +47,60 @@ class Learning_Logger {
     add_shortcode( 'learning_log_form', [ self::class, 'render_frontend_form' ] );
     add_action( 'wp_enqueue_scripts', [ self::class, 'enqueue_frontend_assets' ] );
     add_action( 'wp_ajax_log_learning_entry', [ self::class, 'handle_ajax_log' ] );
+    if ( defined( 'WP_CLI' ) && WP_CLI ) {
+        WP_CLI::add_command( 'learning logs', function() {
+            $logs = get_option('learning_logs', []);
+            if (empty($logs)) {
+                WP_CLI::success("No learning logs found.");
+                return;
+            }
+            foreach ($logs as $log) {
+                WP_CLI::log("Day {$log['day']}: {$log['summary']}");
+            }
+        });
+    }
+
+    // add_action( 'wp_ajax_nopriv_log_learning_entry', [ self::class, 'handle_ajax_log' ] );
     }
     public static function handle_ajax_log() {
-        check_ajax_referer( 'log_entry_nonce', 'nonce' );
-
-        if ( ! isset($_POST['day']) || ! isset($_POST['summary']) ) {
-            wp_send_json_error('Missing required fields.');
+        if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'log_entry_nonce') ) {
+            wp_send_json_error('Invalid nonce');
         }
 
-        $logs = get_option( 'learning_logs', [] );
-        $logs[] = [
-            'day' => sanitize_text_field( $_POST['day'] ),
-            'summary' => sanitize_textarea_field( $_POST['summary'] ),
-            'timestamp' => current_time( 'mysql' ),
-        ];
-        update_option( 'learning_logs', $logs );
+        $day = sanitize_text_field($_POST['day'] ?? '');
+        $summary = sanitize_textarea_field($_POST['summary'] ?? '');
 
-        wp_send_json_success( 'Logged successfully!' );
+        if (empty($day) || empty($summary)) {
+            wp_send_json_error('Day and summary are required.');
+        }
+
+        $logs = get_option('learning_logs', []);
+        $logs[] = [
+            'day' => $day,
+            'summary' => $summary,
+            'timestamp' => current_time('mysql'),
+        ];
+        update_option('learning_logs', $logs);
+
+        wp_send_json_success('Log saved successfully!');
     }
+
 
     public static function enqueue_frontend_assets() {
         wp_enqueue_script(
             'learning-frontend-log',
             LEARNING_PLUGIN_URL . 'assets/frontend-log.js',
-            [],
+            ['jquery'],
             '1.0',
             true
         );
 
-        wp_localize_script( 'learning-frontend-log', 'LearningAjax', [
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-             'nonce'    => wp_create_nonce( 'log_entry_nonce' ),
+        wp_localize_script('learning-frontend-log', 'LearningAjax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('log_entry_nonce')
         ]);
     }
+
     public static function render_frontend_form() {
         ob_start();
         ?>
