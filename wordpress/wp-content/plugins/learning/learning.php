@@ -27,5 +27,6 @@ add_action( 'admin_notices', function () {
 // Include main logic
 require_once LEARNING_PLUGIN_PATH . 'includes/learning-logger.php';
 
+
 // Init plugin
 add_action( 'plugins_loaded', [ 'Learning_Logger', 'init' ] );
