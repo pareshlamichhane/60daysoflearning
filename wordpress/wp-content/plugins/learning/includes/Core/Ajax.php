@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_AJAX {
+class Ajax {
     public static function init() {
         add_action( 'wp_ajax_log_learning_entry', [ self::class, 'handle_log' ] );
     }

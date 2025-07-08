@@ -24,9 +24,12 @@ add_action( 'admin_notices', function () {
     echo '<div class="notice notice-info"><p>60 Days of Learning Plugin is active.</p></div>';
 });
 
-// Include main logic
-require_once LEARNING_PLUGIN_PATH . 'includes/learning-logger.php';
-
+// Include autoloader
+require_once LEARNING_PLUGIN_PATH . 'includes/autoload.php';
+// require_once LEARNING_PLUGIN_PATH . 'includes/Logger.php';
 
 // Init plugin
-add_action( 'plugins_loaded', [ 'Learning_Logger', 'init' ] );
+use LearningPlugin\Logger;
+add_action( 'plugins_loaded', function () {
+    LearningPlugin\Logger::init();
+});

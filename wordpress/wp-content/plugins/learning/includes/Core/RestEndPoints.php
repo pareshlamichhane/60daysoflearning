@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_RestEndPoints {
+class RestEndPoints {
     public static function init() {
         add_action('rest_api_init', function () {
             register_rest_route('learning/v1', '/snippets', [

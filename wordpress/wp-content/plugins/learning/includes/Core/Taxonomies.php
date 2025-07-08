@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_Taxonomies {
+class Taxonomies {
     public static function init() {
         add_action( 'init', [ self::class, 'register_learning_taxonomies' ] );
     }

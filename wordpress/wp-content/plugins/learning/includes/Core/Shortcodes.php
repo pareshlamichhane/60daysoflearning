@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_Shortcodes {
+class Shortcodes {
     
     public static function init() {
         add_shortcode( 'learning_log_form', [ self::class, 'render_frontend_form' ] );

@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_DashboardWidget {
+class DashboardWidget {
     public static function init() {
         add_action( 'wp_dashboard_setup', [ self::class, 'add_learning_dashboard_widget' ] );
     }

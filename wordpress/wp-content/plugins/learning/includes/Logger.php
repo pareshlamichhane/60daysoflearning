@@ -1,26 +1,27 @@
 <?php
-// File: includes/class-learning-logger.php
+namespace LearningPlugin;
+
 
 defined('ABSPATH') || exit;
+use LearningPlugin\Core\Ajax;
+use LearningPlugin\Core\CLI;
+use LearningPlugin\Core\DashboardWidget;
+use LearningPlugin\Core\RestEndPoints;
+use LearningPlugin\Core\Shortcodes;
+use LearningPlugin\Core\SnippetsCPT;
+use LearningPlugin\Core\Taxonomies;
 
-class Learning_Logger {
+class Logger {
     public static function init() {
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/ajax-handlers.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/cli.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/dashboard-widget.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/rest-endpoints.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/shortcodes.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/snippets-cpt.php';
-        require_once LEARNING_PLUGIN_PATH . 'includes/core/taxonomies.php';
 
         // Initialize individual modules
-        Learning_AJAX::init();
-        Learning_CLI::init();
-        Learning_DashboardWidget::init();
-        Learning_RestEndPoints::init();
-        Learning_Shortcodes::init();
-        Learning_SnippetsCPT::init();
-        Learning_Taxonomies::init();
+        Ajax::init();
+        CLI::init();
+        DashboardWidget::init();
+        RestEndPoints::init();
+        Shortcodes::init();
+        SnippetsCPT::init();
+        Taxonomies::init();
 
         // Assets
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);

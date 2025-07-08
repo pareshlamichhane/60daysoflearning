@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_SnippetsCPT {
+class SnippetsCPT {
 
     public static function init() {
         add_action( 'manage_learning_snippet_posts_custom_column', [ self::class, 'render_snippet_columns' ], 10, 2 );

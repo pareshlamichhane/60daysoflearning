@@ -1,8 +1,9 @@
 <?php
+namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Learning_CLI {
+class CLI {
     public static function init() {
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
             WP_CLI::add_command( 'learning logs', function() {
