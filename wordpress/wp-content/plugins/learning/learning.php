@@ -25,7 +25,7 @@ add_action( 'admin_notices', function () {
 });
 
 // Include autoloader
-require_once LEARNING_PLUGIN_PATH . 'includes/autoload.php';
+require_once LEARNING_PLUGIN_PATH . 'vendor/autoload.php';
 // require_once LEARNING_PLUGIN_PATH . 'includes/Logger.php';
 
 // Init plugin

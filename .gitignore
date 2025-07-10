@@ -1,4 +1,6 @@
 wordpress/*
+wordpress/wp-content/plugins/learning/vendor/*
+wordpress/wp-content/plugins/learning/vendor/composer/*
 !wordpress/wp-content/
 !wordpress/wp-content/plugins/
 !wordpress/wp-content/plugins/**

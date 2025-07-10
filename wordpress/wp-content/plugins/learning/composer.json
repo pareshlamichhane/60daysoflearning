@@ -1,0 +1,18 @@
+{
+    "name": "paresh/learning",
+    "description": "This is a WordPress plugin made as byproduct of 60 Days of Learning by Paresh Lamichhane",
+    "type": "project",
+    "license": "GPL-2.0",
+    "autoload": {
+        "psr-4": {
+            "LearningPlugin\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Paresh Lamichhane",
+            "email": "PareshLamichhane@gmail.com"
+        }
+    ],
+    "require": {}
+}

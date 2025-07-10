@@ -15,20 +15,37 @@ class DashboardWidget {
             [ self::class, 'render_learning_widget' ]
         );
     }
+    private static function get_tip_pool(): array {
+        return [
+            "Keep functions short — if it does more than one thing, split it.",
+            "Write comments for why, not what.",
+            "Use `wp_nonce_field()` for every POST form to prevent CSRF.",
+            "Avoid querying all posts with `-1` unless you cache the result.",
+            "Use `wp_localize_script()` to safely pass PHP data to JS.",
+            "Learn how the WordPress hook system actually works under the hood.",
+            "Don’t mix business logic inside shortcode callbacks.",
+            "Flush rewrite rules only on activation, never on every load.",
+            "Debug slow plugins with Query Monitor.",
+            "Custom post types aren’t just for content — they can be used for structured data too.",
+        ];
+    }
 
     public static function render_learning_widget() {
-        $tips = [
-            'Write before you code.',
-            'Debug using echo and die when stuck.',
-            'Keep your functions short and focused.',
-            'Think in inputs/outputs.',
-            'Build first, optimize later.'
-        ];
+        $tip = get_transient('learning_plugin_daily_tip');
 
-        $tip = $tips[ array_rand( $tips ) ];
+        if (!$tip) {
+            $tips = self::get_tip_pool();
 
-        echo "<p><strong>Today's Tip:</strong></p><blockquote style='margin:10px 0;font-style:italic;'>{$tip}</blockquote>";
+            if (!empty($tips)) {
+                $tip = $tips[array_rand($tips)];
+                set_transient('learning_plugin_daily_tip', $tip, DAY_IN_SECONDS);
+            } else {
+                $tip = 'No tips available.';
+            }
+        }
 
+        echo '<div class="learning-tip" style="padding: 8px; font-style: italic;">' . esc_html($tip) . '</div>';
+    
         $logs = get_option( 'learning_logs', [] );
 
         if ( empty( $logs ) ) {
