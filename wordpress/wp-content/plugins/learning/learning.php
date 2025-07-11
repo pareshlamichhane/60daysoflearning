@@ -9,7 +9,7 @@
  * Author URI:        https://pareshlamichhane.com.np/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Update URI:        https://chiyabytes.wordpress.com/plugins/learning/
+ * Update URI:        https://686a58b5026e.ngrok-free.app/update.json
  */
  
 defined( 'ABSPATH' ) || exit;

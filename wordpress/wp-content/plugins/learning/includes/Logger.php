@@ -10,6 +10,7 @@ use LearningPlugin\Core\RestEndPoints;
 use LearningPlugin\Core\Shortcodes;
 use LearningPlugin\Core\SnippetsCPT;
 use LearningPlugin\Core\Taxonomies;
+use LearningPlugin\Core\SiteHealth;
 
 class Logger {
     public static function init() {
@@ -22,6 +23,7 @@ class Logger {
         Shortcodes::init();
         SnippetsCPT::init();
         Taxonomies::init();
+        SiteHealth::init();
 
         // Assets
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
