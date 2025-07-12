@@ -25,6 +25,7 @@ define( 'DB_NAME', '60daysoflearning' );
 /** Database username */
 define( 'DB_USER', 'root' );
 
+
 /** Database password */
 define( 'DB_PASSWORD', '9845hello' );
 
@@ -57,6 +58,8 @@ define( 'SECURE_AUTH_SALT', 'Vmgl%G]Oko329C8T.vfP+akRQnH~a Y!#^~}f?8y}(PHc7gPalo
 define( 'LOGGED_IN_SALT',   'vtyrajtJ9U,:m,p`}8R|O#d$F?R9((2C=,:-7!BL}sgGKP;6_1W@8cr8(q*[,Ok3' );
 define( 'NONCE_SALT',       '4|OT]msU!0|e8:3=t!qVi*jn)0#6JhkJV:}43%I+d=GXh:axVU~/{(F-:w]R-J+}' );
 
+/** For FTP Issues */
+define( 'FS_METHOD', 'direct' );
 /**#@-*/
 
 /**

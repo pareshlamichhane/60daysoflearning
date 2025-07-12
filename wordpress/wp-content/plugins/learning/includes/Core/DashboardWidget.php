@@ -2,6 +2,7 @@
 namespace LearningPlugin\Core;
 
 defined( 'ABSPATH' ) || exit;
+use LearningPlugin\Core\Stats;
 
 class DashboardWidget {
     public static function init() {
@@ -31,6 +32,22 @@ class DashboardWidget {
     }
 
     public static function render_learning_widget() {
+            $counts = Stats::get_log_counts_by_topic();
+
+            echo '<div class="learning-plugin-dashboard">';
+            echo '<p><strong>Learning Logs by Topic (cached):</strong></p>';
+
+            if (!empty($counts)) {
+                echo '<ul>';
+                foreach ($counts as $topic => $count) {
+                    echo '<li>' . esc_html($topic) . ': ' . esc_html($count) . ' logs</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No logs found yet. Start logging today!</p>';
+            }
+
+            echo '</div>';
         $tip = get_transient('learning_plugin_daily_tip');
 
         if (!$tip) {
