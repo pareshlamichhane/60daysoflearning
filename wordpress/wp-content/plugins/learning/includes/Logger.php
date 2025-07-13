@@ -28,6 +28,8 @@ class Logger {
         // Assets
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue_frontend_assets']);
+        add_action('admin_notices', ['LearningPlugin\Core\Notice', 'render']);
+        \LearningPlugin\Core\Notice::success('Learning Plugin loaded successfully.');
 
     }
 
