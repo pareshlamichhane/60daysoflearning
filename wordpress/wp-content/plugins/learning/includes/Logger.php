@@ -11,6 +11,7 @@ use LearningPlugin\Core\Shortcodes;
 use LearningPlugin\Core\SnippetsCPT;
 use LearningPlugin\Core\Taxonomies;
 use LearningPlugin\Core\SiteHealth;
+use LearningPlugin\Core\DependencyChecker;
 
 class Logger {
     public static function init() {
@@ -24,6 +25,8 @@ class Logger {
         SnippetsCPT::init();
         Taxonomies::init();
         SiteHealth::init();
+        DependencyChecker::init();
+
 
         // Assets
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
