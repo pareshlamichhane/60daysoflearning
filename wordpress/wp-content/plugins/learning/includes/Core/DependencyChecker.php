@@ -10,19 +10,14 @@ class DependencyChecker {
     protected static bool $dependencies_met = true;
 
     public static function check_dependencies(): void {
-        // Example: Requires ACF plugin
         include_once ABSPATH . 'wp-admin/includes/plugin.php';
         if (!is_plugin_active('advanced-custom-fields/acf.php')) {
             self::$dependencies_met = false;
         }
 
-        // Example: Requires PHP 8.1+
         if (version_compare(PHP_VERSION, '8.1', '<')) {
             self::$dependencies_met = false;
         }
-
-        // Optional: auto-disable your plugin if deps are critical
-        // deactivate_plugins(plugin_basename(__FILE__));
     }
 
     public static function show_admin_notice(): void {
